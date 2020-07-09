@@ -3,7 +3,34 @@
 
 N=1;
 
-printf "average\tmin\tmax\tstd\thostname\n";
+function help {
+	printf "Usage: $0 [-n runs]\n"
+	printf "\t-n runs\tthe number of times to ping"
+	
+}
+
+while test $# -gt 0; do
+	case "$1" in
+		-h|--help)
+			help
+			exit 0
+			;;
+		-p|--pings)
+			shift
+			if test $# -gt 0; then
+				N=$1
+			else
+				help
+			fi
+			shift
+			;;
+		*)
+			break
+			;;
+	esac
+done		
+
+printf "average\tmin\tmax\tstd\thostname\t$N runs\n";
 for i in $(echo -e "nitter-instance-list\ninvidious-instances-list\nbibliogram-instance-list"); do 
 	for url in $(cat popup.html | pup "datalist#$i" | pup 'option attr{value}'); do 
 		host=$(echo $url | sed 's:.*//::'); 
